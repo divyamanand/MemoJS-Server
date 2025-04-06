@@ -35,7 +35,6 @@ const addQuestions = async (req, res) => {
                 return res.status(400).send(`Incomplete Question Info: ${JSON.stringify(quest)}`);
             }
 
-            // Check if the question already exists
             const checkResult = await revision.query(qQuestionExists, [link]);
             const exists = checkResult.rows[0]?.exists;
             if (exists) continue;

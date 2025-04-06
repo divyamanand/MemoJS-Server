@@ -44,7 +44,7 @@ const addQuestions = async (req, res) => {
             const insertResult = await revision.query(qAddQuestion, [question, difficulty, tagsString, link]);
             const { id, added_on } = insertResult.rows[0];
 
-            // Insert revisions
+
             const revisionDates = calculateRevisionDates(difficulty, added_on);
             const revisions = [];
             for (const date of revisionDates) {

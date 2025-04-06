@@ -40,7 +40,6 @@ const addQuestions = async (req, res) => {
             const exists = checkResult.rows[0]?.exists;
             if (exists) continue;
 
-            // Convert tags to comma-separated string
             const tagsString = Array.isArray(tags) ? tags.join(",") : tags;
 
             // Insert new question

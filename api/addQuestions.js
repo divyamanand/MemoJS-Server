@@ -41,7 +41,6 @@ const addQuestions = async (req, res) => {
 
             const tagsString = Array.isArray(tags) ? tags.join(",") : tags;
 
-            // Insert new question
             const insertResult = await revision.query(qAddQuestion, [question, difficulty, tagsString, link]);
             const { id, added_on } = insertResult.rows[0];
 

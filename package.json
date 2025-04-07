@@ -11,11 +11,17 @@
   "author": "",
   "license": "ISC",
   "description": "",
+  "engines": {
+    "node": ">=22.14.0"
+  },
   "dependencies": {
+    "compression": "^1.8.0",
     "concurrently": "^9.1.2",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "express-rate-limit": "^7.5.0",
+    "helmet": "^8.1.0",
     "nodemon": "^3.1.9",
     "pg": "^8.14.1",
     "postgres": "^3.4.5"

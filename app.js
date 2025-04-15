@@ -10,6 +10,7 @@ import { markRevisions } from "./api/markRevisions.js"
 import compression from "compression"
 import helmet from "helmet"
 import { rateLimit } from "express-rate-limit"
+import { countMarkRevisions } from "./api/countMarkerdRevisions.js"
 
 
 const app = express()
@@ -40,4 +41,5 @@ app.get("/check-question", existQuestion)
 app.get("/list-revisions", listRevisions)
 app.post("/mark-revisions", markRevisions)
 app.post("/add-questions", addQuestions)
+app.get("/count-completed", countMarkRevisions)
 

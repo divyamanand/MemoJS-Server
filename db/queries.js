@@ -81,6 +81,13 @@ const qChangeQuestionDifficulty = `
     SET difficulty = $1 
     WHERE id = $2;
 `
+
+const qCountCompleted = `
+    SELECT COUNT(*) 
+    FROM revisions 
+    WHERE completed = true
+    AND DATE(revision_date) = CURRENT_DATE;
+`
 export { 
     qListQuestions,
     qUpdateRevisions,
@@ -92,5 +99,6 @@ export {
     qMarkRevisionDone,
     qDeleteRevision,
     qChangeQuestionDifficulty,
-    qAddRevision
+    qAddRevision,
+    qCountCompleted
 }

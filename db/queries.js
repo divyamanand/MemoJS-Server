@@ -88,6 +88,52 @@ const qCountCompleted = `
     WHERE completed = true
     AND DATE(revision_date) = CURRENT_DATE;
 `
+
+const qCountRevisions = `
+    SELECT COUNT(*) AS completed_count
+    FROM revisions
+    WHERE completed = true;
+`
+
+const qDecreaseRevisions = `
+  WITH numbered AS (
+    SELECT id,
+           ROW_NUMBER() OVER (ORDER BY revision_date, id) AS rn
+    FROM revisions
+    WHERE completed = false
+      AND revision_date >= CURRENT_DATE
+      AND revision_date <= CURRENT_DATE + INTERVAL '7 days'
+      AND question_id = $1
+  ),
+  to_delete AS (
+    SELECT id
+    FROM numbered
+    WHERE rn % 2 = 0
+  )
+  DELETE FROM revisions
+  WHERE id IN (SELECT id FROM to_delete);
+`
+
+const qIncreaseRevisions = `
+    WITH date_series AS (
+        SELECT CURRENT_DATE + INTERVAL '1 day' * generate_series(0, 6) AS revision_date
+    ),
+    numbered_dates AS (
+        SELECT 
+            revision_date,
+            ROW_NUMBER() OVER () AS row_num
+        FROM date_series
+    )
+    INSERT INTO revisions (question_id, revision_date, completed)
+    SELECT 
+        $1 AS question_id,  -- Use your specific question_id
+        revision_date, 
+        FALSE AS completed
+    FROM numbered_dates
+    WHERE row_num % 2 = 0;
+`
+
+
 export { 
     qListQuestions,
     qUpdateRevisions,
@@ -100,5 +146,8 @@ export {
     qDeleteRevision,
     qChangeQuestionDifficulty,
     qAddRevision,
-    qCountCompleted
+    qCountCompleted,
+    qCountRevisions,
+    qDecreaseRevisions,
+    qIncreaseRevisions
 }

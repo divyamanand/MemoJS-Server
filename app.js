@@ -11,6 +11,8 @@ import compression from "compression"
 import helmet from "helmet"
 import { rateLimit } from "express-rate-limit"
 import { countMarkRevisions } from "./api/countMarkerdRevisions.js"
+import { countRevisions } from "./api/countRevisions.js"
+import { decreaseRevisions } from "./api/decreaseRevisions.js"
 
 
 const app = express()
@@ -42,4 +44,6 @@ app.get("/list-revisions", listRevisions)
 app.post("/mark-revisions", markRevisions)
 app.post("/add-questions", addQuestions)
 app.get("/count-completed", countMarkRevisions)
+app.get("/count-revisions", countRevisions)
+app.post("/descrease-revisions", decreaseRevisions)
 

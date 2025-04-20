@@ -92,7 +92,8 @@ const qCountCompleted = `
 const qCountRevisions = `
     SELECT COUNT(*) AS completed_count
     FROM revisions
-    WHERE completed = true;
+    WHERE question_id = $1
+    AND completed = true;
 `
 
 const qDecreaseRevisions = `

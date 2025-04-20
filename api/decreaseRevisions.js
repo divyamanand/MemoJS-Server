@@ -2,11 +2,13 @@ import { revision } from "../db/db.js"
 import { qCountCompleted, qDecreaseRevisions } from "../db/queries.js"
 
 const decreaseRevisions = async( req, res) => {
-    const questionID = req.body
+    const {questionID} = req.body
 
     try { 
 
-        const count = await revision.query(qCountCompleted, [questionID])
+        const {rows} = await revision.query(qCountCompleted, [questionID])
+
+        const count = rows[0]?.completed_count || 0
 
         if (count >= 7) {
             await revision.query(qDecreaseRevisions, [questionID])

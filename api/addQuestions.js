@@ -6,9 +6,9 @@ const calculateRevisionDates = (difficulty, startDate) => {
     const c_vals = { hard: 1.3, medium: 1.7, easy: 2 };
     const iterations = { hard: 25, medium: 13, easy: 10 };
 
-    const k = k_vals[difficulty.toLowerCase()];
-    const c = c_vals[difficulty.toLowerCase()];
-    const totalIterations = iterations[difficulty.toLowerCase()];
+    const k = 5//k_vals[difficulty.toLowerCase()];
+    const c = 3//c_vals[difficulty.toLowerCase()];
+    const totalIterations = 4//iterations[difficulty.toLowerCase()];
 
     const revisionDates = [];
     for (let index = 0; index < totalIterations; index++) {

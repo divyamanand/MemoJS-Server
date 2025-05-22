@@ -2,23 +2,22 @@ import { revision } from "../db/db.js";
 import { qAddQuestion, qAddRevision, qQuestionExists } from "../db/queries.js";
 
 const calculateRevisionDates = (difficulty, startDate) => {
-    const iterations = { easy: 2, medium: 3, hard: 4 };
+    const k_vals = { hard: 1, medium: 1, easy: 2 };
+    const c_vals = { hard: 1.35, medium: 1.57, easy: 1.65 };
+    const iterations = { hard: 7, medium: 5, easy: 3 };
+
+    const k = k_vals[difficulty.toLowerCase()];
+    const c = c_vals[difficulty.toLowerCase()];
     const totalIterations = iterations[difficulty.toLowerCase()];
 
     const revisionDates = [];
-    const start = new Date(startDate);
-    const end = new Date('2025-12-31');
-
-    const totalDays = Math.floor((end - start) / (1000 * 60 * 60 * 24));
-    const interval = Math.floor(totalDays / (totalIterations + 1));
-
-    for (let i = 1; i <= totalIterations; i++) {
-        const newDate = new Date(start);
-        newDate.setDate(start.getDate() + i * interval);
+    for (let index = 0; index < totalIterations; index++) {
+        const day = Math.round(k * (c ** index));
+        const newDate = new Date(startDate);
+        newDate.setDate(newDate.getDate() + day);
         newDate.setHours(0, 0, 0, 0);
         revisionDates.push(newDate);
     }
-
     return revisionDates;
 };
 

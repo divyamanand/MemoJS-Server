@@ -47,10 +47,10 @@ const addQuestions = async (req, res) => {
 
             const revisionDates = calculateRevisionDates(difficulty, added_on);
             const revisions = [];
-            for (const date of revisionDates) {
-                const r = await revision.query(qAddRevision, [id, date]);
-                revisions.push(r.rows[0]);
-            }
+            // for (const date of revisionDates) {
+            //     const r = await revision.query(qAddRevision, [id, date]);
+            //     revisions.push(r.rows[0]);
+            // }
 
             quests.push({ question, revisions });
         }

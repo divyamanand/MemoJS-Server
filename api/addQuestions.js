@@ -2,41 +2,24 @@ import { revision } from "../db/db.js";
 import { qAddQuestion, qAddRevision, qQuestionExists } from "../db/queries.js";
 
 const calculateRevisionDates = (difficulty, startDate) => {
-    const c_vals = { hard: 1.35, medium: 1.57, easy: 1.65 };
-    const iterations = { hard: 7, medium: 5, easy: 3 };
-  
-    difficulty = difficulty.toLowerCase();
-  
-    const c = c_vals[difficulty];
-    const totalIterations = iterations[difficulty];
-  
-    // Fixed end date: 1 Jan 2026 (exclusive)
-    const endDate = new Date('2026-01-01T00:00:00');
-  
-    const start = new Date(startDate);
-    start.setHours(0, 0, 0, 0);
-  
-    // Calculate total days between start and end
-    const diffTime = endDate - start;
-    if (diffTime <= 0) {
-      throw new Error('Start date must be before 1 Jan 2026');
-    }
-    const totalDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-  
-    // Calculate k so that the last revision happens <= totalDays
-    const k = totalDays / (c ** (totalIterations - 1));
-  
+    const k_vals = { hard: 1, medium: 1, easy: 2 };
+    const c_vals = { hard: 1.3, medium: 1.7, easy: 2 };
+    const iterations = { hard: 25, medium: 13, easy: 10 };
+
+    const k = k_vals[difficulty.toLowerCase()];
+    const c = c_vals[difficulty.toLowerCase()];
+    const totalIterations = iterations[difficulty.toLowerCase()];
+
     const revisionDates = [];
-    for (let i = 0; i < totalIterations; i++) {
-      const dayOffset = Math.round(k * (c ** i));
-      const newDate = new Date(start);
-      newDate.setDate(newDate.getDate() + dayOffset);
-      revisionDates.push(newDate);
+    for (let index = 0; index < totalIterations; index++) {
+        const day = Math.round(k * (c ** index));
+        const newDate = new Date(startDate);
+        newDate.setDate(newDate.getDate() + day);
+        newDate.setHours(0, 0, 0, 0);
+        revisionDates.push(newDate);
     }
     return revisionDates;
-  };
-  
-
+};
 
 const addQuestions = async (req, res) => {
     const questions = req.body.questions;
@@ -62,12 +45,12 @@ const addQuestions = async (req, res) => {
             const { id, added_on } = insertResult.rows[0];
 
 
-            // const revisionDates = calculateRevisionDates(difficulty, added_on);
-            // const revisions = [];
-            // for (const date of revisionDates) {
-            //     const r = await revision.query(qAddRevision, [id, date]);
-            //     revisions.push(r.rows[0]);
-            // }
+            const revisionDates = calculateRevisionDates(difficulty, added_on);
+            const revisions = [];
+            for (const date of revisionDates) {
+                const r = await revision.query(qAddRevision, [id, date]);
+                revisions.push(r.rows[0]);
+            }
 
             quests.push({ question, revisions });
         }
@@ -79,4 +62,3 @@ const addQuestions = async (req, res) => {
 };
 
 export { addQuestions };
-
